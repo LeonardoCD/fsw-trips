@@ -37,7 +37,7 @@ export default function TripReservation({ trip }: TripReservationProps) {
         <p className="font-medium text-sm text-primaryDarker">R$2500</p>
       </div>
 
-      <div className="pb-10 border-b-grayLighter w-full">
+      <div className="pb-10 border-b border-grayLighter">
         <Button className="mt-3 w-full">Reservar agora</Button>
       </div>
     </div>
