@@ -30,6 +30,7 @@ export default async function TripDetails({
       <TripHeader trip={trip} />
 
       <TripReservation
+        tripId={trip.id}
         tripMaxGuests={trip.maxGuests}
         tripStartDate={trip.startDate}
         tripEndDate={trip.endDate}
