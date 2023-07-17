@@ -29,13 +29,20 @@ export default async function TripDetails({
     <div className="container mx-auto">
       <TripHeader trip={trip} />
 
-      <TripReservation trip={trip} />
+      <TripReservation
+        tripMaxGuests={trip.maxGuests}
+        tripStartDate={trip.startDate}
+        tripEndDate={trip.endDate}
+      />
 
       <TripDescription description={trip.description} />
 
       <TripHighlights highlights={trip.highlights} />
 
-      <TripLocation location={trip.location} locationDescription={trip.locationDescription} />
+      <TripLocation
+        location={trip.location}
+        locationDescription={trip.locationDescription}
+      />
     </div>
   );
 }
