@@ -31,6 +31,7 @@ export default function TripConfirmation({
     if (status === "unauthenticated") {
       router.push("/");
     }
+
     const fetchTrip = async () => {
       const response = await fetch(`http://localhost:3000/api/trips/check`, {
         method: "POST",
@@ -41,14 +42,18 @@ export default function TripConfirmation({
         }),
       });
 
-      const { trip, totalPrice } = await response.json();
+      const res = await response.json();
 
-      setTrip(trip);
-      setTotalPrice(totalPrice);
+      if (res.error) {
+        return router.push("/");
+      }
+
+      setTrip(res.trip);
+      setTotalPrice(res.totalPrice);
     };
 
     fetchTrip();
-  }, [status]);
+  }, [status, searchParams, router, params]);
 
   if (!trip) return null;
 
