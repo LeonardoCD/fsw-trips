@@ -55,7 +55,7 @@ export default function TripReservation({
     const res = await response.json();
 
     if (res?.error?.code === "TRIP_ALREADY_RESERVED") {
-      return setError("startDate", {
+      setError("startDate", {
         type: "manual",
         message: "Esta data ja está reservada.",
       });

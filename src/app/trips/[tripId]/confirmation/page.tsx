@@ -48,7 +48,7 @@ export default function TripConfirmation({
     };
 
     fetchTrip();
-  }, []);
+  }, [status]);
 
   if (!trip) return null;
 
