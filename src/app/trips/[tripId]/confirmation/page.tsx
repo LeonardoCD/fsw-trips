@@ -12,6 +12,7 @@ import { useRouter } from "next/navigation";
 import Button from "@/components/Button";
 
 import { Trip } from "@prisma/client";
+import { toast } from "react-toastify";
 
 export default function TripConfirmation({
   params,
@@ -23,7 +24,7 @@ export default function TripConfirmation({
 
   const router = useRouter();
 
-  const { status } = useSession();
+  const { status, data } = useSession();
 
   const searchParams = useSearchParams();
 
@@ -56,6 +57,28 @@ export default function TripConfirmation({
   }, [status, searchParams, router, params]);
 
   if (!trip) return null;
+
+  const handleBuyClick = async () => {
+    const res = await fetch("http://localhost:3000/api/trips/reservation", {
+      method: "POST",
+      body: Buffer.from(
+        JSON.stringify({
+          tripId: params.tripId,
+          startDate: searchParams.get("startDate"),
+          endDate: searchParams.get("endDate"),
+          guests: Number(searchParams.get("guests")),
+          userId: (data?.user as any).id,
+          totalPaid: totalPrice,
+        })
+      ),
+    });
+
+    if (!res.ok) return toast.error("Ocorreu um erro ao realizar a reserva!");
+
+    router.push("/");
+
+    toast.success("Reserva realizada com sucesso!");
+  };
 
   const startDate = new Date(searchParams.get("startDate") as string);
   const endDate = new Date(searchParams.get("endDate") as string);
@@ -117,7 +140,9 @@ export default function TripConfirmation({
 
         <p>{guests} hóspedes</p>
 
-        <Button className="mt-5">Finalizar Compras</Button>
+        <Button className="mt-5" onClick={handleBuyClick}>
+          Finalizar Compras
+        </Button>
       </div>
     </div>
   );
