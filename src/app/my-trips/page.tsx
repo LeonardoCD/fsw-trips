@@ -21,17 +21,17 @@ export default function MyTrips() {
 
   const router = useRouter();
 
+  async function fetchReservations() {
+    const response = await fetch(
+      `http://localhost:3000/api/user/${(data?.user as any)?.id}/reservations`
+    );
+    const json = await response.json();
+
+    setReservations(json);
+  }
+
   useEffect(() => {
-    if (status === "unauthenticated" || !data?.user) return router.push("/");
-
-    async function fetchReservations() {
-      const response = await fetch(
-        `http://localhost:3000/api/user/${(data?.user as any).id}/reservations`
-      );
-      const json = await response.json();
-
-      setReservations(json);
-    }
+    if (status === "unauthenticated") return router.push("/");
 
     fetchReservations();
   }, [status]);
@@ -44,7 +44,11 @@ export default function MyTrips() {
 
       {reservations.length > 0 ? (
         reservations?.map((reservation) => (
-          <UserReservationItem reservation={reservation} key={reservation.id} />
+          <UserReservationItem
+            fetchReservations={fetchReservations}
+            reservation={reservation}
+            key={reservation.id}
+          />
         ))
       ) : (
         <div className="flex flex-col">

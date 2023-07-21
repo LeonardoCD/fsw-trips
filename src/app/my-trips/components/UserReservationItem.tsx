@@ -1,4 +1,4 @@
-import { Prisma, TripReservations } from "@prisma/client";
+import { Prisma } from "@prisma/client";
 import { format } from "date-fns";
 import Image from "next/image";
 import React from "react";
@@ -6,21 +6,19 @@ import ReactCountryFlag from "react-country-flag";
 import ptBR from "date-fns/locale/pt-BR";
 import Button from "@/components/Button";
 import { toast } from "react-toastify";
-import { useRouter } from "next/navigation";
-
 interface UserReservationItemProps {
   reservation: Prisma.TripReservationsGetPayload<{
     include: {
       trip: true;
     };
   }>;
+  fetchReservations: () => void;
 }
 
 export default function UserReservationItem({
   reservation,
+  fetchReservations,
 }: UserReservationItemProps) {
-  const router = useRouter();
-
   const { trip } = reservation;
 
   const handleDeleteClick = async () => {
@@ -32,7 +30,7 @@ export default function UserReservationItem({
 
     toast.success("Reserva cancelada com sucesso!");
 
-    router.refresh();
+    fetchReservations();
   };
 
   return (
