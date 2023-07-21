@@ -5,6 +5,8 @@ import { useSession } from "next-auth/react";
 import { useRouter } from "next/navigation";
 import React, { useEffect, useState } from "react";
 import UserReservationItem from "./components/UserReservationItem";
+import Link from "next/link";
+import Button from "@/components/Button";
 
 export default function MyTrips() {
   const [reservations, setReservations] = useState<
@@ -20,8 +22,6 @@ export default function MyTrips() {
   const router = useRouter();
 
   useEffect(() => {
-    console.log(status);
-
     if (status === "unauthenticated" || !data?.user) return router.push("/");
 
     async function fetchReservations() {
@@ -42,9 +42,21 @@ export default function MyTrips() {
         Minhas Viagens
       </h1>
 
-      {reservations?.map((reservation) => (
-        <UserReservationItem reservation={reservation} key={reservation.id} />
-      ))}
+      {reservations.length > 0 ? (
+        reservations?.map((reservation) => (
+          <UserReservationItem reservation={reservation} key={reservation.id} />
+        ))
+      ) : (
+        <div className="flex flex-col">
+          <p className="font-medium text-primaryDarker mt-5">
+            Você ainda não tem nenhuma reserva =(
+          </p>
+
+          <Link href="/">
+            <Button className="w-full mt-2">Fazer reserva</Button>
+          </Link>
+        </div>
+      )}
     </div>
   );
 }
