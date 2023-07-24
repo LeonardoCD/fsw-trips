@@ -13,14 +13,11 @@ import Button from "@/components/Button";
 
 import { Trip } from "@prisma/client";
 import { toast } from "react-toastify";
+import { loadStripe } from "@stripe/stripe-js";
 
-export default function TripConfirmation({
-  params,
-}: {
-  params: { tripId: string };
-}) {
+const TripConfirmation = ({ params }: { params: { tripId: string } }) => {
   const [trip, setTrip] = useState<Trip | null>();
-  const [totalPrice, setTotalPrice] = useState(0);
+  const [totalPrice, setTotalPrice] = useState<number>(0);
 
   const router = useRouter();
 
@@ -29,12 +26,8 @@ export default function TripConfirmation({
   const searchParams = useSearchParams();
 
   useEffect(() => {
-    if (status === "unauthenticated") {
-      router.push("/");
-    }
-
     const fetchTrip = async () => {
-      const response = await fetch(`http://localhost:3000/api/trips/check`, {
+      const response = await fetch(`/api/trips/check`, {
         method: "POST",
         body: JSON.stringify({
           tripId: params.tripId,
@@ -45,7 +38,7 @@ export default function TripConfirmation({
 
       const res = await response.json();
 
-      if (res.error) {
+      if (res?.error) {
         return router.push("/");
       }
 
@@ -53,13 +46,17 @@ export default function TripConfirmation({
       setTotalPrice(res.totalPrice);
     };
 
+    if (status === "unauthenticated") {
+      router.push("/");
+    }
+
     fetchTrip();
-  }, [status, searchParams, router, params]);
+  }, [status, searchParams, params, router]);
 
   if (!trip) return null;
 
   const handleBuyClick = async () => {
-    const res = await fetch("http://localhost:3000/api/trips/reservation", {
+    const res = await fetch("/api/payment", {
       method: "POST",
       body: Buffer.from(
         JSON.stringify({
@@ -67,17 +64,31 @@ export default function TripConfirmation({
           startDate: searchParams.get("startDate"),
           endDate: searchParams.get("endDate"),
           guests: Number(searchParams.get("guests")),
-          userId: (data?.user as any).id,
-          totalPaid: totalPrice,
+          totalPrice,
+          coverImage: trip.coverImage,
+          name: trip.name,
+          description: trip.description,
         })
       ),
     });
 
-    if (!res.ok) return toast.error("Ocorreu um erro ao realizar a reserva!");
+    if (!res.ok) {
+      return toast.error("Ocorreu um erro ao realizar a reserva!", {
+        position: "bottom-center",
+      });
+    }
 
-    router.push("/");
+    const { sessionId } = await res.json();
 
-    toast.success("Reserva realizada com sucesso!");
+    const stripe = await loadStripe(
+      process.env.NEXT_PUBLIC_STRIPE_KEY as string
+    );
+
+    await stripe?.redirectToCheckout({ sessionId });
+
+    toast.success("Reserva realizada com sucesso!", {
+      position: "bottom-center",
+    });
   };
 
   const startDate = new Date(searchParams.get("startDate") as string);
@@ -85,19 +96,19 @@ export default function TripConfirmation({
   const guests = searchParams.get("guests");
 
   return (
-    <div className="container mx-auto p-5 ">
+    <div className="container mx-auto p-5 lg:max-w-[600px]">
       <h1 className="font-semibold text-xl text-primaryDarker">Sua viagem</h1>
 
       {/* CARD */}
-      <div className="flex flex-col p-5 mt-5 border-grayLighter border border-solid shadow-lg rounded-lg">
+      <div className="flex flex-col p-5 mt-5 border-grayLighter border-solid border shadow-lg rounded-lg">
         <div className="flex items-center gap-3 pb-5 border-b border-grayLighter border-solid">
           <div className="relative h-[106px] w-[124px]">
             <Image
               src={trip.coverImage}
-              alt={trip.name}
               fill
               style={{ objectFit: "cover" }}
-              className="rounded-mg"
+              className="rounded-lg"
+              alt={trip.name}
             />
           </div>
 
@@ -105,10 +116,8 @@ export default function TripConfirmation({
             <h2 className="text-xl text-primaryDarker font-semibold">
               {trip.name}
             </h2>
-
             <div className="flex items-center gap-1">
               <ReactCountryFlag countryCode={trip.countryCode} svg />
-
               <p className="text-xs text-grayPrimary underline">
                 {trip.location}
               </p>
@@ -122,28 +131,27 @@ export default function TripConfirmation({
 
         <div className="flex justify-between mt-1">
           <p className="text-primaryDarker">Total:</p>
-
           <p className="font-medium">R${totalPrice}</p>
         </div>
       </div>
 
       <div className="flex flex-col mt-5 text-primaryDarker">
         <h3 className="font-semibold">Data</h3>
-
         <div className="flex items-center gap-1 mt-1">
-          <p>{format(startDate, "dd 'de' MMM", { locale: ptBR })}</p>
+          <p>{format(startDate, "dd 'de' MMMM", { locale: ptBR })}</p>
           {" - "}
-          <p>{format(endDate, "dd 'de' MMM", { locale: ptBR })}</p>
+          <p>{format(endDate, "dd 'de' MMMM", { locale: ptBR })}</p>
         </div>
 
         <h3 className="font-semibold mt-5">Hóspedes</h3>
-
         <p>{guests} hóspedes</p>
 
         <Button className="mt-5" onClick={handleBuyClick}>
-          Finalizar Compras
+          Finalizar Compra
         </Button>
       </div>
     </div>
   );
-}
+};
+
+export default TripConfirmation;
