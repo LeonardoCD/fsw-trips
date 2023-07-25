@@ -29,7 +29,7 @@ export default function Trips() {
   }, []);
 
   return (
-    <div className="container mx-auto flex flex-col p-5 items-center lg:items-start">
+    <div className="container mx-auto flex flex-col p-5 items-center lg:items-start lg:pt-10">
       <h1 className="text-primaryDarker font-semibold text-xl lg:w-full lg:text-left lg:text-[2.5rem]">
         Viagens Encontradas
       </h1>
