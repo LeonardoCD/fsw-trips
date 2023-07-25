@@ -38,18 +38,20 @@ export default function MyTrips() {
 
   return (
     <div className="container mx-auto p-5">
-      <h1 className="font-semibold text-primaryDarker text-xl">
+      <h1 className="font-semibold text-primaryDarker text-xl lg:mb-5">
         Minhas Viagens
       </h1>
 
       {reservations.length > 0 ? (
-        reservations?.map((reservation) => (
-          <UserReservationItem
-            fetchReservations={fetchReservations}
-            reservation={reservation}
-            key={reservation.id}
-          />
-        ))
+        <div className="flex flex-col lg:grid lg:grid-cols-3 lg:gap-14">
+          {reservations?.map((reservation) => (
+            <UserReservationItem
+              fetchReservations={fetchReservations}
+              reservation={reservation}
+              key={reservation.id}
+            />
+          ))}
+        </div>
       ) : (
         <div className="flex flex-col">
           <p className="font-medium text-primaryDarker mt-5">
