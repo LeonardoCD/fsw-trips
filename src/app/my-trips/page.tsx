@@ -37,7 +37,7 @@ export default function MyTrips() {
   }, [status]);
 
   return (
-    <div className="container mx-auto p-5">
+    <div className="container mx-auto p-5 lg:mb-5">
       <h1 className="font-semibold text-primaryDarker text-xl lg:mb-5">
         Minhas Viagens
       </h1>
@@ -53,13 +53,13 @@ export default function MyTrips() {
           ))}
         </div>
       ) : (
-        <div className="flex flex-col">
+        <div className="flex flex-col lg:max-w-[500px]">
           <p className="font-medium text-primaryDarker mt-5">
             Você ainda não tem nenhuma reserva =(
           </p>
 
           <Link href="/">
-            <Button className="w-full mt-2">Fazer reserva</Button>
+            <Button className="w-full mt-2 lg:mt-5">Fazer reserva</Button>
           </Link>
         </div>
       )}
