@@ -67,7 +67,7 @@ export default function TripReservation({
     }
 
     if (res?.error?.code === "INVALID_START_DATE") {
-     return setError("startDate", {
+      return setError("startDate", {
         type: "manual",
         message: "Data inválida.",
       });
@@ -81,7 +81,9 @@ export default function TripReservation({
     }
 
     router.push(
-      `/trips/${tripId}/confirmation?startDate=${data.startDate?.toISOString()}&endDate=${data.endDate?.toISOString()}&guests=${data.guests}`
+      `/trips/${tripId}/confirmation?startDate=${data.startDate?.toISOString()}&endDate=${data.endDate?.toISOString()}&guests=${
+        data.guests
+      }`
     );
   };
 
@@ -89,7 +91,11 @@ export default function TripReservation({
   const endDate = watch("endDate");
 
   return (
-    <div className="flex flex-col px-5">
+    <div className="flex flex-col px-5 lg:min-w-[380px] lg:p-5 lg:border lg:border-grayLighter lg:rounded-lg lg:shadow-md">
+      <p className="hidden lg:block text-xl text-primaryDarker mb-4">
+        <span className="font-semibold">R$ {pricePerDay}</span> por dia
+      </p>
+
       <div className="flex gap-4">
         <Controller
           name="startDate"
@@ -165,7 +171,7 @@ export default function TripReservation({
         </p>
       </div>
 
-      <div className="pb-10 border-b border-grayLighter">
+      <div className="pb-10 border-b border-grayLighter lg:border-none lg:pb-0">
         <Button
           onClick={() => handleSubmit(onSubmit)()}
           className="mt-3 w-full"
