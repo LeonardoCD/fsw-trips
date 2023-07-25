@@ -15,12 +15,12 @@ export default function QuickSearch() {
         <div className="w-full h-[1px] bg-grayLighter"></div>
       </div>
 
-      <div className="flex w-full justify-between mt-5">
+      <div className="flex w-full justify-between mt-5 lg:mt-10 lg:justify-center gap-40">
         <Link href={`/trips/search?text=hotel`}>
           <div className="flex flex-col items-center gap-1 hover:text-primary transition-all">
             <Image width={35} height={35} src="/hotel-icon.png" alt="Hotel" />
 
-            <p className="text-sm text-grayPrimary">Hotel</p>
+            <p className="text-sm lg:text-base text-grayPrimary">Hotel</p>
           </div>
         </Link>
 
@@ -28,7 +28,7 @@ export default function QuickSearch() {
           <div className="flex flex-col items-center gap-1 hover:text-primary transition-all">
             <Image width={35} height={35} src="/farm-icon.png" alt="Fazenda" />
 
-            <p className="text-sm text-grayPrimary">Fazenda</p>
+            <p className="text-sm lg:text-base text-grayPrimary">Fazenda</p>
           </div>
         </Link>
 
@@ -36,7 +36,7 @@ export default function QuickSearch() {
           <div className="flex flex-col items-center gap-1 hover:text-primary transition-all">
             <Image width={35} height={35} src="/cottage-icon.png" alt="Chalé" />
 
-            <p className="text-sm text-grayPrimary">Chalé</p>
+            <p className="text-sm lg:text-base text-grayPrimary">Chalé</p>
           </div>
         </Link>
 
@@ -44,7 +44,7 @@ export default function QuickSearch() {
           <div className="flex flex-col items-center gap-1 hover:text-primary transition-all">
             <Image width={35} height={35} src="/inn-icon.png" alt="Pousada" />
 
-            <p className="text-sm text-grayPrimary">Pousada</p>
+            <p className="text-sm lg:text-base text-grayPrimary">Pousada</p>
           </div>
         </Link>
       </div>
